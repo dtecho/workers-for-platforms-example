@@ -12,19 +12,19 @@ import { Customer } from './types';
 const CUSTOMER_AUTH_HEADER_KEY = 'X-Customer-Token';
 
 export const withDb: MiddlewareHandler<{
-  Bindings: Env
-  Variables: { db: D1QB }
+  Bindings: Env;
+  Variables: { db: D1QB };
 }> = async (c, next) => {
-  c.set("db", new D1QB(c.env.DB));
+  c.set('db', new D1QB(c.env.DB));
   await next();
 };
 
 export const withCustomer: MiddlewareHandler<{
-  Bindings: Env
+  Bindings: Env;
   Variables: {
-    db: D1QB
-    customer: Customer
-  }
+    db: D1QB;
+    customer: Customer;
+  };
 }> = async (c, next) => {
   const token = c.req.header(CUSTOMER_AUTH_HEADER_KEY);
   if (!token) {
@@ -32,7 +32,7 @@ export const withCustomer: MiddlewareHandler<{
   }
   try {
     const customer = await GetCustomerFromToken(c.var.db, token);
-    c.set("customer", customer);
+    c.set('customer', customer);
     await next();
   } catch (e) {
     return c.text(`Unauthorized ${CUSTOMER_AUTH_HEADER_KEY}`, 403);
